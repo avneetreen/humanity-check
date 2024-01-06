@@ -1,7 +1,10 @@
 from newsplease import NewsPlease, NewsArticle
 import json
+import os 
+import csv 
+import logging 
 
-def get_data(url: str) -> NewsArticle:
+def retrieve_article_from_url(url: str) -> NewsArticle:
     """Retrieve text of article given url
 
     Args:
@@ -10,10 +13,42 @@ def get_data(url: str) -> NewsArticle:
     Returns:
         NewsPlease.from_url: object of type
     """
-    article = NewsPlease.from_url(url)
+    article = NewsPlease.from_url(url, timeout=4)
     return article
+    
+def extract_articles_from_csvs(filename: str):
+    """Extract article objects given urls in csvs
 
+    Args:
+        filename (str): name of csv
+
+    Returns:
+        None
+    """
+    list_of_articles = []
+    with open(os.path.join("../data/links/",filename), "r") as csvFile:
+        reader = csv.DictReader(csvFile)
+        count = 0
+        out_file = open("../data/data.jsonl", 'w', newline='\n')
+        for line in reader: 
+            count+=1
+            link = line['Link']
+            try: 
+                article = retrieve_article_from_url(link)
+                out_file.write(str(article.get_serializable_dict()))
+                out_file.write("\n")
+                print(article.title)
+                print(count)
+            except Exception as e:
+                print("Unable to get data from: ", link)
+                print("Exception: ", e)
+                continue
+    return
+
+    
+            
+    
 if __name__ == "__main__": 
-    url = "https://www.theguardian.com/world/2023/oct/07/israel-strikes-back-after-massive-palestinian-attack"
-    article = get_data(url)
-    article_json = json.loads(article)
+    for filename in os.listdir("../data/links"):
+        print(filename)
+        extract_articles_from_csvs(filename)
