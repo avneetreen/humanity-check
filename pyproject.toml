@@ -9,6 +9,7 @@ readme = "README.md"
 python = "^3.9"
 news-please = "^1.5.44"
 pandas = "^2.1.4"
+bertopic= "^0.16.0"
 
 
 [build-system]
