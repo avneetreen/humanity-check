@@ -88,9 +88,4 @@ target/
 # Mypy cache
 .mypy_cache/
 
-data/raw/
-data/raw/US/
-data/raw/UK/
-data/raw/
-data/raw/US/
-data/links/
+data/
