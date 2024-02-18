@@ -1,30 +1,32 @@
-# -*- coding: utf-8 -*-
-import click
+import json
+import glob
 import logging
-from pathlib import Path
-from dotenv import find_dotenv, load_dotenv
+import pandas as pd
 
+def data_compactor(data_dir: str) -> None:
+    """Read files from dir and combine into a dataframe
 
-@click.command()
-@click.argument('input_filepath', type=click.Path(exists=True))
-@click.argument('output_filepath', type=click.Path())
-def main(input_filepath, output_filepath):
-    """ Runs data processing scripts to turn raw data from (../raw) into
-        cleaned data ready to be analyzed (saved in ../processed).
+    Args:
+        data_dir (str): name of sub folder to extract data from 
+
+    Returns:
+        None: writes the dataframe to a csv file
     """
-    logger = logging.getLogger(__name__)
-    logger.info('making final data set from raw data')
+    data_list = []
+    try:
+        for name in glob.glob(f"../data/raw/{data_dir}/*.json"):
+            article = json.load(open(name,'r'))
+            data_list.append(article)
+    except FileNotFoundError as e: 
+        logging.error(f"File not found: {e}")
+    else:   
+        df = pd.DataFrame(data_list)
+        req_cols = ['description', 'maintext', 'source_domain', 'title', 'url', 'language', 'date_publish']
+        df = df[req_cols]
+        df.to_csv(f"../data/processed/{data_dir}.csv", index=False)
+    return
 
-
-if __name__ == '__main__':
-    log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    logging.basicConfig(level=logging.INFO, format=log_fmt)
-
-    # not used in this stub but often useful for finding various files
-    project_dir = Path(__file__).resolve().parents[2]
-
-    # find .env automagically by walking up directories until it's found, then
-    # load up the .env entries as environment variables
-    load_dotenv(find_dotenv())
-
-    main()
+if __name__ == "__main__":
+    data_compactor("UK")
+    data_compactor("MiddleEast")
+    data_compactor("US")
