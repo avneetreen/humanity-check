@@ -33,6 +33,8 @@ def extract_articles_from_csvs(filename: str):
     """
     data = pd.read_csv(os.path.join("data/links/mediacloud",
                                     filename))
+    data = data[data.language == "en"]
+    
     article_count = 1
     count = 0
     for index, row in data.iterrows():
@@ -54,8 +56,6 @@ def extract_articles_from_csvs(filename: str):
 
 
 if __name__ == "__main__":
-    # for filename in os.listdir("../data/links"):
-    #    print(filename)
-    outfile = "data/US/"
-    filename = "mc-onlinenews-mediacloud-20240201135145-content_USA.csv"
+    outfile = "data/raw/MiddleEast/"
+    filename = "mc-onlinenews-mediacloud-20240202114211-content_middle_east.csv"
     extract_articles_from_csvs(filename)
