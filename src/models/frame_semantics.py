@@ -62,4 +62,4 @@ def get_frame_semantics(filename: str, region: str):
 if __name__ == "__main__":
     regions = ["UK", "US", "MiddleEast"]
     for region in regions:
-        get_frame_semantics(f"./data/raw/{region}.csv", region)
+        get_frame_semantics(f"./data/processed/{region}.csv", region)

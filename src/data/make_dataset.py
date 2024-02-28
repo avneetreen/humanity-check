@@ -14,7 +14,7 @@ def data_compactor(data_dir: str) -> None:
     """
     data_list = []
     try:
-        for name in glob.glob(f"../data/raw/{data_dir}/*.json"):
+        for name in glob.glob(f"./data/raw/{data_dir}/*.json"):
             article = json.load(open(name,'r'))
             data_list.append(article)
     except FileNotFoundError as e: 
@@ -23,7 +23,7 @@ def data_compactor(data_dir: str) -> None:
         df = pd.DataFrame(data_list)
         req_cols = ['description', 'maintext', 'source_domain', 'title', 'url', 'language', 'date_publish']
         df = df[req_cols]
-        df.to_csv(f"../data/processed/{data_dir}.csv", index=False)
+        df.to_csv(f"./data/processed/{data_dir}.csv", index=False)
     return
 
 if __name__ == "__main__":

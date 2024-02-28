@@ -1,7 +1,6 @@
 from newsplease import NewsPlease, NewsArticle
 import json
 import os
-import csv
 import logging
 import pandas as pd
 
@@ -22,27 +21,27 @@ def retrieve_article_from_url(url: str) -> NewsArticle:
     return article
 
 
-def extract_articles_from_csvs(filename: str):
+def extract_articles_from_csvs(filepath: str, outfolder: str):
     """Extract article objects given urls in csvs
 
     Args:
-        filename (str): name of csv
+        filepath (str): name of csv
+        outfolder (str): name of folder to save articles
 
     Returns:
         None
     """
-    data = pd.read_csv(os.path.join("data/links/mediacloud",
-                                    filename))
+    data = pd.read_csv(filepath)
     data = data[data.language == "en"]
     
     article_count = 1
     count = 0
-    for index, row in data.iterrows():
+    for _, row in data.iterrows():
         count += 1
         link = row['url']
         try:
             article = retrieve_article_from_url(link)
-            outfile_name = outfile + f"{article_count}.json"
+            outfile_name = outfolder + f"{article_count}.json"
             with open(outfile_name, 'a+', newline='\n') as f:
                 json.dump(article.get_serializable_dict(), f)
                 article_count += 1
@@ -52,10 +51,11 @@ def extract_articles_from_csvs(filename: str):
         except Exception as e:
             print(e)
             continue
-    return
-
+    return None
 
 if __name__ == "__main__":
-    outfile = "data/raw/MiddleEast/"
-    filename = "mc-onlinenews-mediacloud-20240202114211-content_middle_east.csv"
-    extract_articles_from_csvs(filename)
+    reg = "US"
+    outfolder = f"data/raw/{reg}/"
+    os.mkdir(outfolder)
+    filepath = f"data/links/WayBackMachine/filtered/{reg}.csv"
+    extract_articles_from_csvs(filepath, outfolder)

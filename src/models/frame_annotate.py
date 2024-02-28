@@ -47,7 +47,7 @@ def annotate_frames()->None:
     
     tokenizer.pad_token = tokenizer.eos_token
 
-    news_df = pd.read_csv("./data/processed/selected_data.csv")
+    news_df = pd.read_csv("./data/processed/selected_data_100sampled.csv")
 
     article_json = {}
 
@@ -57,7 +57,7 @@ def annotate_frames()->None:
             break
 
         text = row['maintext']
-        title = row['title']
+        #title = row['title']
         
         inputs = tokenizer.encode("You are a journalism scholar doing analysis of news articles. A list of generic frames and their description is: " + frames + "\n Your task is to annotate the article below for one of the listed frames and provide reasoning for it. " + text + "\n Output the generic frame and the reasoning. Format your output in a json format with fields 'frame' and 'reasoning'", return_tensors="pt", padding=True).to(device)
 
@@ -74,7 +74,10 @@ def annotate_frames()->None:
         except Exception as e:
             print(e)
             continue
-        news_df.to_csv("./data/processed/annotated_data.csv")
+        selected_columns = ['source_domain', 'title', 'url',
+        'region', 'frame', 'reasoning']
+        news_df[selected_columns].to_csv("./data/outputs/frame_annotated_data_smol.csv")
+        news_df.to_csv("./data/outputs/frame_annotated_data.csv")
 
 def main():
     annotate_frames()
