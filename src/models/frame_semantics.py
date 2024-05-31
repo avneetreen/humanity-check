@@ -105,9 +105,13 @@ def get_frame_semantics_docs(filename: str, region: str):
             article_text = row[1].maintext
             sentences = process_article(article_text)
             print(index, len(sentences))
-            doc_semantics = [
-                frame_transformer.detect_frames(sentence)
-                for sentence in sentences]
+            try:
+                doc_semantics = [
+                    frame_transformer.detect_frames(sentence)
+                    for sentence in sentences]
+            except Exception as e:
+                logger.error(e)
+                pass
     except Exception as e:
         logger.error(e)
     else:
