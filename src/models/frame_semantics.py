@@ -1,4 +1,3 @@
-import nltk
 import ssl
 from frame_semantic_transformer import FrameSemanticTransformer
 import pandas as pd
@@ -14,9 +13,6 @@ except AttributeError:
     pass
 else:
     ssl._create_default_https_context = _create_unverified_https_context
-
-nltk.download('wordnet')
-nltk.download('framenet_v17')
 
 logger = logging.getLogger()
 
@@ -59,7 +55,7 @@ def get_frame_semantics_titles(filename: str, region: str):
             pickle_obj["indices"].extend(indices)
             pickle_obj["frame_semantics"].extend(result)
             pickle.dump(pickle_obj, file=open(
-                f"./data/processed/frame_semantics_{region}.pickle", "wb"))
+                f"./data/processed/doc_semantics/frame_semantics_{region}_head.pickle", "wb"))
 
 
 # Function to process each article and return frames
@@ -120,7 +116,7 @@ def get_frame_semantics_docs(filename: str, region: str):
         pickle.dump(
             pickle_obj,
             file=open(
-                f"../data/processed/doc_semantics/frame_semantics_{region}.pickle",
+                f"../data/processed/doc_semantics/frame_semantics_{region}_main.pickle",
                 "wb"))
 
 
@@ -128,4 +124,4 @@ if __name__ == "__main__":
     regions = ["UK", "US", "MiddleEast"]
     for region in regions:
         get_frame_semantics_docs(
-            f"./data/raw/filtered_data/{region}.csv", region)
+            f"./data/processed/{region}.csv", region)

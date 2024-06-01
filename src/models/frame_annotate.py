@@ -54,7 +54,6 @@ def annotate_frames()->None:
     for i, (index, row) in enumerate(news_df.iterrows()):
         if i % 100 == 0:
             print(f"Annotated {i} articles")
-            break
 
         text = row['maintext']
         #title = row['title']
@@ -73,7 +72,10 @@ def annotate_frames()->None:
 
         except Exception as e:
             print(e)
-            continue
+            print(generated_text)
+            news_df.at[index, "frame"] = "ERROR"
+            news_df.at[index, "reasoning"] = e
+
         selected_columns = ['source_domain', 'title', 'url',
         'region', 'frame', 'reasoning']
         news_df[selected_columns].to_csv("./data/outputs/frame_annotated_data_smol.csv")
