@@ -77,8 +77,6 @@ def process_article(article_text: str):
         return sentences
     except Exception as e:
         logger.error(e)
-    else:
-        return []
 
 
 def get_frame_semantics_docs(filename: str, region: str):
@@ -102,23 +100,23 @@ def get_frame_semantics_docs(filename: str, region: str):
             sentences = process_article(article_text)
             print(index, len(sentences))
             try:
-                doc_semantics = [
-                    frame_transformer.detect_frames(sentence)
-                    for sentence in sentences]
+                doc_semantics = [frame_transformer.detect_frames(sentence) for sentence in sentences]
             except Exception as e:
                 logger.error(e)
                 pass
+            else:
+                pickle_obj["index"].append(index)
+                pickle_obj["frame_semantics"].append(doc_semantics)
+                if index % 100 == 0:
+                    print("Saving..")
+                    pickle.dump(
+                        pickle_obj, file=open(f"./data/processed/doc_semantics/frame_semantics_{region}_main.pickle","wb"))
     except Exception as e:
         logger.error(e)
-    else:
-        pickle_obj["index"].append(index)
-        pickle_obj["frame_semantics"].append(doc_semantics)
+    finally:
+        print("Saving at the end..")
         pickle.dump(
-            pickle_obj,
-            file=open(
-                f"../data/processed/doc_semantics/frame_semantics_{region}_main.pickle",
-                "wb"))
-
+                pickle_obj, file=open(f"./data/processed/doc_semantics/frame_semantics_{region}_main.pickle","wb"))
 
 if __name__ == "__main__":
     regions = ["UK", "US", "MiddleEast"]
