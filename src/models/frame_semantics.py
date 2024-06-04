@@ -96,10 +96,10 @@ def get_frame_semantics_docs(filename: str, region: str):
         for row in df.iterrows():
             index = row[0]
             doc_semantics = []
-            article_text = row[1].maintext
-            sentences = process_article(article_text)
-            print(index, len(sentences))
             try:
+                article_text = row[1].maintext
+                sentences = process_article(article_text)
+                print(index, len(sentences))
                 doc_semantics = [frame_transformer.detect_frames(sentence) for sentence in sentences]
             except Exception as e:
                 logger.error(e)
@@ -122,4 +122,4 @@ if __name__ == "__main__":
     regions = ["UK", "US", "MiddleEast"]
     for region in regions:
         get_frame_semantics_docs(
-            f"./data/processed/{region}.csv", region)
+            f"./data/processed/selected_{region}.csv", region)
