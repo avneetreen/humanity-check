@@ -108,3 +108,4 @@ w3lib==2.1.2
 warcio==1.7.4
 wheel==0.41.2
 zope.interface==6.1
+torch==2.3.0
