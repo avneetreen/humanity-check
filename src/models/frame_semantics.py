@@ -77,7 +77,10 @@ def get_frame_semantics_docs(filename: str, region: str):
     for index, row in df.iterrows():
         try:
             headline = row['title']
-            sentences = process_article(row['maintext'])
+            description = row['description']
+            maintext = row['maintext'] 
+            all_text = f"{headline} {description} {maintext}"
+            sentences = process_article(row['all_text'])
             print(len(sentences))
 
             # Create batches of sentences
